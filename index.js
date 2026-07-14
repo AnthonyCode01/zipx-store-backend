@@ -1,0 +1,74 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
+import cors from "cors";
+import sequelize from "./config/database.js";
+
+// Modelos
+import Categoria from "./models/Categoria.js";
+import Curso from "./models/Curso.js";
+import Usuario from "./models/Usuario.js";
+import Pedido from "./models/Pedido.js";
+import DetallePedido from "./models/DetallePedido.js";
+
+// Rutas
+import categoriaRoutes from "./routes/CategoriaRoutes.js";
+import cursoRoutes from "./routes/CursoRoutes.js";
+import usuarioRoutes from "./routes/UsuarioRoutes.js";
+import pedidoRoutes from "./routes/PedidoRoutes.js";
+import detallePedidoRoutes from "./routes/PedidoRoutes.js";
+
+const app = express();
+const port = process.env.PORT || 3001;
+
+// ===============================
+// MIDDLEWARES
+// ===============================
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173", 
+    "https://frontzipx.z9.web.core.windows.net"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
+app.use(express.json());
+
+// ===============================
+// RUTAS
+// ===============================
+
+app.use("/categorias", categoriaRoutes);
+app.use("/cursos", cursoRoutes);
+app.use("/usuarios", usuarioRoutes);
+app.use("/pedidos", pedidoRoutes);
+app.use("/detallepedidos", detallePedidoRoutes);
+
+// Ruta de prueba
+app.get("/", (req, res) => {
+  res.send("Servidor funcionando correctamente");
+});
+
+// ===============================
+// BASE DE DATOS
+// ===============================
+
+sequelize.authenticate()
+  .then(() => {
+    console.log("✅ Conexión a PostgreSQL exitosa");
+    return sequelize.sync();
+  })
+  .then(() => {
+    console.log("✅ Base de datos sincronizada");
+
+    app.listen(port, () => {
+      console.log(`🚀 Servidor ejecutándose en el puerto: ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error("❌ Error de conexión:");
+    console.error(error);
+  });
