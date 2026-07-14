@@ -6,7 +6,7 @@ const sequelize = new Sequelize(
   process.env.DB_PASS || '@PrograWEB', 
   {
     host: process.env.DB_HOST || 'zipx-storedb.postgres.database.azure.com',
-    port: process.env.DB_PORT || 8080,
+    port: process.env.DB_PORT || 5432,
     dialect: 'postgres',
     dialectOptions: {
       ssl: {
