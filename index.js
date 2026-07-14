@@ -17,7 +17,7 @@ import pedidoRoutes from "./routes/PedidoRoutes.js";
 import detallePedidoRoutes from "./routes/DetallePedidoRoutes.js";
 
 const app = express();
-const PORT = 3001;
+const port = process.env.PORT || 3001;
 
 // ===============================
 // MIDDLEWARES
