@@ -1,19 +1,23 @@
 import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASS,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: "postgres",
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  }
+);
+
 export default sequelize;
-
-const sequelize = new Sequelize("zipxstore", "postgres", "TU_CONTRASEÑA", {
-    host: "localhost",
-    dialect: "postgres"
-});
-
-export const sequelize = new Sequelize(process.env.db_name, process.env.db_user, process.env.db_pass,
-{
-host: process.env.db_host,
-dialect: "postgres",
-dialectOptions: {
-ssl: {
-require: true,
-rejectUnauthorized: false
-}
-}
-})

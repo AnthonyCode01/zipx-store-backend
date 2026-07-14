@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import sequelize from "./config/database.js";
@@ -14,7 +17,7 @@ import categoriaRoutes from "./routes/CategoriaRoutes.js";
 import cursoRoutes from "./routes/CursoRoutes.js";
 import usuarioRoutes from "./routes/UsuarioRoutes.js";
 import pedidoRoutes from "./routes/PedidoRoutes.js";
-import detallePedidoRoutes from "./routes/DetallePedidoRoutes.js";
+import detallePedidoRoutes from "./routes/PedidoRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -23,14 +26,12 @@ const port = process.env.PORT || 3001;
 // MIDDLEWARES
 // ===============================
 
-// Permitir peticiones desde el frontend React
 app.use(cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
 
-// Permitir recibir JSON
 app.use(express.json());
 
 // ===============================
@@ -45,21 +46,26 @@ app.use("/detallepedidos", detallePedidoRoutes);
 
 // Ruta de prueba
 app.get("/", (req, res) => {
-    res.send("Servidor funcionando correctamente");
+  res.send("Servidor funcionando correctamente");
 });
 
 // ===============================
 // BASE DE DATOS
 // ===============================
 
-sequelize.sync()
-    .then(() => {
-        console.log(" Base de datos sincronizada correctamente");
+sequelize.authenticate()
+  .then(() => {
+    console.log("✅ Conexión a PostgreSQL exitosa");
+    return sequelize.sync();
+  })
+  .then(() => {
+    console.log("✅ Base de datos sincronizada");
 
-        app.listen(PORT, () => {
-            console.log(` Servidor ejecutándose en http://localhost:${PORT}`);
-        });
-    })
-    .catch((error) => {
-        console.error(" Error al sincronizar la base de datos:", error);
+    app.listen(port, () => {
+      console.log(🚀 Servidor ejecutándose en http://localhost:${port});
     });
+  })
+  .catch((error) => {
+    console.error("❌ Error de conexión:");
+    console.error(error);
+  });
